@@ -1,0 +1,73 @@
+<div class="container pb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 class="mb-0">Testimonials</h2>
+
+    <div class="btn-group">
+      @for (s of statuses; track s) {
+        <button
+          class="btn btn-sm text-capitalize"
+          [class.btn-dark]="currentStatus === s"
+          [class.btn-outline-dark]="currentStatus !== s"
+          (click)="setStatus(s)"
+        >
+          {{ s || 'All' }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (testimonials$ | async; as res) {
+    <p class="text-muted">Total: {{ res.total }}</p>
+
+    @for (t of res.data; track t._id) {
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+              <h6 class="mb-0">{{ t.user.name }}</h6>
+              <small class="text-muted">{{ t.createdAt | date: 'dd/MM/yyyy HH:mm' }}</small>
+            </div>
+            <span class="badge" [class]="'badge ' + statusClass(t.status)">{{ t.status }}</span>
+          </div>
+
+          <p class="my-3">“{{ t.message }}”</p>
+
+          <div class="d-flex gap-2">
+            @if (t.status !== 'approved') {
+              <button class="btn btn-success btn-sm" (click)="changeStatus(t, 'approved')">
+                Approve
+              </button>
+            }
+            @if (t.status !== 'declined') {
+              <button class="btn btn-outline-danger btn-sm" (click)="changeStatus(t, 'declined')">
+                Decline
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p class="text-center text-muted py-4">No testimonials found.</p>
+    }
+
+    @if (res.totalPages > 1) {
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="res.page === 1">
+            <button class="page-link" (click)="onPageChange(res.page - 1)">Previous</button>
+          </li>
+
+          @for (p of pages(res.totalPages); track p) {
+            <li class="page-item" [class.active]="p === res.page">
+              <button class="page-link" (click)="onPageChange(p)">{{ p }}</button>
+            </li>
+          }
+
+          <li class="page-item" [class.disabled]="res.page === res.totalPages">
+            <button class="page-link" (click)="onPageChange(res.page + 1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+    }
+  }
+</div>

@@ -1,0 +1,84 @@
+<div class="container pb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Orders</h2>
+
+    <div style="min-width: 220px">
+      <select #statusSelect class="form-select" (change)="onStatusChange(statusSelect.value)">
+        <option value="">All statuses</option>
+        @for (s of statuses; track s) {
+          <option [value]="s">{{ statusLabel(s) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (orders$ | async; as res) {
+    <p class="text-muted">Total orders: {{ res.total }}</p>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Change status</th>                                          
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of res.data; track order._id) {
+            <tr>
+              <td>#{{ order._id.slice(-6) }}</td>
+              <td>
+                {{ order.user.name }}<br />
+                <small class="text-muted">{{ order.user.email }}</small>
+              </td>
+              <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ order.items.length }}</td>
+              <td>{{ order.total }} EGP</td>
+              <td>
+                <span class="badge" [class]="'badge ' + statusClass(order.status)">
+                  {{ statusLabel(order.status) }}
+                </span>
+              </td>
+              <td style="min-width: 190px">
+                <select #sel class="form-select form-select-sm" (change)="changeStatus(order, sel)">
+                  @for (s of statuses; track s) {
+                    <option [value]="s" [selected]="s === order.status">{{ statusLabel(s) }}</option>
+                  }
+                </select>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="text-center text-muted py-4">No orders found.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (res.totalPages > 1) {
+      <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="res.page === 1">
+            <button class="page-link" (click)="onPageChange(res.page - 1)">Previous</button>
+          </li>
+
+          @for (p of pages(res.totalPages); track p) {
+            <li class="page-item" [class.active]="p === res.page">
+              <button class="page-link" (click)="onPageChange(p)">{{ p }}</button>
+            </li>
+          }
+
+          <li class="page-item" [class.disabled]="res.page === res.totalPages">
+            <button class="page-link" (click)="onPageChange(res.page + 1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+    }
+  }
+</div>

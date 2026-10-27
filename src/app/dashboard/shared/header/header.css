@@ -1,0 +1,5 @@
+.nav-pills {
+  --bs-nav-pills-link-active-bg: var(--brown);
+  --bs-nav-link-color: var(--brown);
+  --bs-nav-link-hover-color: var(--brown-dark);
+}

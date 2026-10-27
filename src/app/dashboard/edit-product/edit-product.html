@@ -1,0 +1,118 @@
+<div class="container pb-5" style="max-width: 700px">
+  <h2 class="mb-4">Edit Product</h2>
+
+  @if (notFound) {
+    <div class="alert alert-warning">Product not found.</div>
+  } @else {
+    @if (errorMessage) {
+      <div class="alert alert-danger">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" formControlName="name" />
+        @if (productForm.controls.name.touched && productForm.controls.name.invalid) {
+          <small class="text-danger">Name must be at least 3 characters</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Slug (english, lowercase, with dashes)</label>
+        <input type="text" class="form-control" formControlName="slug" />
+        @if (productForm.controls.slug.touched && productForm.controls.slug.invalid) {
+          <small class="text-danger">Use english letters, numbers and dashes only, like: my-product</small>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" rows="3" formControlName="desc"></textarea>
+        @if (productForm.controls.desc.touched && productForm.controls.desc.invalid) {
+          <small class="text-danger">Description is required</small>
+        }
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label class="form-label">Price (EGP)</label>
+          <input type="number" class="form-control" formControlName="price" />
+          @if (productForm.controls.price.touched && productForm.controls.price.invalid) {
+            <small class="text-danger">Price must be at least 1</small>
+          }
+        </div>
+
+        <div class="col-6 mb-3">
+          <label class="form-label">Stock</label>
+          <input type="number" class="form-control" formControlName="stock" />
+          @if (productForm.controls.stock.touched && productForm.controls.stock.invalid) {
+            <small class="text-danger">Stock must be 0 or more</small>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Category</label>
+          <select #catSelect class="form-select" formControlName="category"
+                  (change)="onCategoryChange(catSelect.value)">
+            <option value="">Choose category</option>
+            @if (categories$ | async; as cats) {
+              @for (c of cats.data; track c._id) {
+                <option [value]="c._id">{{ c.name }}</option>
+              }
+            }
+          </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Type</label>
+          <select class="form-select" formControlName="subCategory">
+            <option value="">Choose type</option>
+            @if (subCategories$ | async; as subs) {
+              @for (s of subs.data; track s._id) {
+                <option [value]="s._id">{{ s.name }}</option>
+              }
+            }
+          </select>
+          @if (productForm.controls.subCategory.touched && productForm.controls.subCategory.invalid) {
+            <small class="text-danger">Please choose a type</small>
+          }
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label class="form-label">Season</label>
+          <select class="form-select" formControlName="season">
+            <option value="">Choose season</option>
+            @for (s of seasons; track s) {
+              <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Image</label>
+
+        @if (currentImage) {
+          <div class="mb-2">
+            <img
+              [src]="imgBase + currentImage"
+              alt="current image"
+              class="rounded"
+              style="width: 90px; height: 90px; object-fit: cover"
+            />
+            <small class="text-muted ms-2">Current image</small>
+          </div>
+        }
+
+        <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)" />
+        <small class="text-muted">Optional: choose a new image only if you want to replace it.</small>
+      </div>
+
+      <button type="submit" class="btn btn-brand" [disabled]="isLoading">
+        {{ isLoading ? 'Saving...' : 'Save changes' }}
+      </button>
+    </form>
+  }
+</div>

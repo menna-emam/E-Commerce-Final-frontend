@@ -1,0 +1,112 @@
+<div class="container my-5">
+  <h2 class="mb-4">My Profile</h2>
+
+  @if (profile$ | async; as res) {
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="mb-1">{{ res.data.name }}</h5>
+        <small class="text-muted">{{ res.data.email }}</small>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4 class="mb-0">My Addresses</h4>
+      <button class="btn btn-brand btn-sm" (click)="toggleForm()">
+        {{ showForm ? 'Cancel' : 'Add new address' }}
+      </button>
+    </div>
+
+    @if (showForm) {
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          @if (errorMessage) {
+            <div class="alert alert-danger">{{ errorMessage }}</div>
+          }
+
+          <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Governorate</label>
+              <select class="form-select" formControlName="governorate">
+                <option value="">Choose governorate</option>
+                @if (governorates$ | async; as govs) {
+                  @for (g of govs.data; track g._id) {
+                    <option [value]="g._id">{{ g.name }} ({{ g.shippingPrice }} EGP)</option>
+                  }
+                }
+              </select>
+              @if (addressForm.controls.governorate.touched && addressForm.controls.governorate.invalid) {
+                <small class="text-danger">Please choose a governorate</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" formControlName="city" />
+              @if (addressForm.controls.city.touched && addressForm.controls.city.invalid) {
+                <small class="text-danger">City is required</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Street</label>
+              <input type="text" class="form-control" formControlName="street" />
+              @if (addressForm.controls.street.touched && addressForm.controls.street.invalid) {
+                <small class="text-danger">Street is required</small>
+              }
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input type="text" class="form-control" formControlName="phone" placeholder="01012345678" />
+              @if (addressForm.controls.phone.touched && addressForm.controls.phone.invalid) {
+                <small class="text-danger">Enter a valid Egyptian phone number (11 digits)</small>
+              }
+            </div>
+
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="isDefault" formControlName="isDefault" />
+              <label class="form-check-label" for="isDefault">Set as default address</label>
+            </div>
+
+            <button type="submit" class="btn btn-brand" [disabled]="isLoading">
+              {{ isLoading ? 'Saving...' : 'Save address' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    }
+
+    @for (address of res.data.addresses; track address._id) {
+      <div class="card shadow-sm mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="mb-1">{{ address.governorate.name }} - {{ address.city }}</h6>
+              <p class="mb-1">{{ address.street }}</p>
+              <small class="text-muted">
+                {{ address.phone }} · Shipping: {{ address.governorate.shippingPrice }} EGP
+              </small>
+            </div>
+
+            @if (address.isDefault) {
+              <span class="badge bg-success">Default</span>
+            }
+          </div>
+
+          <div class="mt-3 d-flex gap-2">
+            @if (!address.isDefault) {
+              <button class="btn btn-outline-dark btn-sm" (click)="setDefault(address._id)">
+                Set as default
+              </button>
+            }
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteAddress(address._id)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p class="text-muted">You have no addresses yet.</p>
+    }
+  }
+</div>

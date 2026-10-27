@@ -1,0 +1,12 @@
+.unread {
+  background-color: #fff8ee;
+  border-left: 4px solid var(--brown);
+}
+
+.pagination {
+  --bs-pagination-color: var(--brown);
+  --bs-pagination-hover-color: var(--brown-dark);
+  --bs-pagination-focus-color: var(--brown-dark);
+  --bs-pagination-active-bg: var(--brown);
+  --bs-pagination-active-border-color: var(--brown);
+}

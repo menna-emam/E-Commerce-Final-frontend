@@ -1,0 +1,159 @@
+<div class="container pb-5">
+  <h2 class="mb-4">Sales Report</h2>
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-end">
+        <div class="col-12 col-md-4">
+          <label class="form-label">From</label>
+          <input #from type="date" class="form-control" />
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">To</label>
+          <input #to type="date" class="form-control" />
+        </div>
+        <div class="col-12 col-md-4 d-flex gap-2">
+          <button class="btn btn-brand" (click)="applyFilter(from.value, to.value)">Apply</button>
+          <button class="btn btn-outline-dark" (click)="resetFilter(from, to)">Reset</button>
+        </div>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-danger mt-3 mb-0">{{ errorMessage }}</div>
+      }
+    </div>
+  </div>
+
+  @if (report$ | async; as res) {
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card h-100">
+          <div class="card-body">
+            <small class="text-muted">Total revenue</small>
+            <h4 class="mb-0">{{ res.data.overall?.totalRevenue ?? 0 | number }} EGP</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card h-100">
+          <div class="card-body">
+            <small class="text-muted">Items revenue</small>
+            <h4 class="mb-0">{{ res.data.overall?.itemsRevenue ?? 0 | number }} EGP</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card h-100">
+          <div class="card-body">
+            <small class="text-muted">Shipping revenue</small>
+            <h4 class="mb-0">{{ res.data.overall?.shippingRevenue ?? 0 | number }} EGP</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card shadow-sm stat-card h-100">
+          <div class="card-body">
+            <small class="text-muted">Orders</small>
+            <h4 class="mb-0">{{ res.data.overall?.totalOrders ?? 0 }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-lg-6">
+        <h5 class="mb-3">Top products</h5>
+        <div class="table-responsive">
+          <table class="table align-middle bg-white shadow-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Sold</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (p of res.data.topProducts; track p._id) {
+                <tr>
+                  <td>
+                    <img
+                      [src]="imgBase + p.imgURL"
+                      [alt]="p.name"
+                      class="rounded me-2"
+                      style="width: 40px; height: 40px; object-fit: cover"
+                      loading="lazy"
+                    />
+                    {{ p.name }}
+                  </td>
+                  <td>{{ p.quantitySold }}</td>
+                  <td>{{ p.revenue | number }} EGP</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">No data.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <h5 class="mb-3">Top customers</h5>
+        <div class="table-responsive">
+          <table class="table align-middle bg-white shadow-sm">
+            <thead>
+              <tr>
+                <th>Customer</th>
+                <th>Orders</th>
+                <th>Spent</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of res.data.topCustomers; track c._id) {
+                <tr>
+                  <td>
+                    {{ c.name }}<br />
+                    <small class="text-muted">{{ c.email }}</small>
+                  </td>
+                  <td>{{ c.totalOrders }}</td>
+                  <td>{{ c.totalSpent | number }} EGP</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">No data.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <h5 class="mb-3">Monthly sales</h5>
+        <div class="table-responsive">
+          <table class="table align-middle bg-white shadow-sm">
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Orders</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of res.data.monthlySales; track m._id.year + '-' + m._id.month) {
+                <tr>
+                  <td>{{ monthName(m._id.year, m._id.month) }}</td>
+                  <td>{{ m.orders }}</td>
+                  <td>{{ m.revenue | number }} EGP</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-3">No data.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+</div>

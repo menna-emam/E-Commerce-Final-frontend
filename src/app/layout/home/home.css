@@ -1,0 +1,137 @@
+.hero {
+  background: linear-gradient(135deg, var(--beige) 0%, var(--cream) 100%);
+}
+
+.hero-tag,
+.section-tag {
+  letter-spacing: 0.3em;
+  color: var(--brown);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.category-card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  height: 340px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(74, 50, 32, 0.18);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cat-women {
+  background: linear-gradient(135deg, #d9b99b 0%, #a9714b 55%, #6b4a2f 100%);
+}
+
+.cat-men {
+  background: linear-gradient(135deg, #8a6a4f 0%, #4a3220 60%, #2b1c11 100%);
+}
+
+.category-card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -70px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transition: transform 0.6s ease;
+}
+
+.category-card::after {
+  content: '';
+  position: absolute;
+  top: 100px;
+  right: 100px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.6s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(74, 50, 32, 0.28);
+  color: #fff;
+}
+
+.category-card:hover::before {
+  transform: scale(1.25);
+}
+
+.category-card:hover::after {
+  transform: translate(-12px, 12px);
+}
+
+.watermark {
+  position: absolute;
+  right: 1rem;
+  bottom: -1.2rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 6.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  user-select: none;
+}
+
+.category-content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+.small-tag {
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  opacity: 0.85;
+}
+
+.category-card h3 {
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  color: #fff;
+}
+
+.shop-link {
+  display: inline-block;
+  padding: 0.5rem 1.4rem;
+  border: 1px solid #fff;
+  border-radius: 50rem;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.category-card:hover .shop-link {
+  background: #fff;
+  color: var(--brown-dark);
+}
+
+.category-card:hover .arrow {
+  transform: translateX(5px);
+}
+
+.view-all {
+  color: var(--brown);
+}
+
+.features {
+  background-color: var(--beige);
+}
+
+.features .icon {
+  font-size: 2.2rem;
+}

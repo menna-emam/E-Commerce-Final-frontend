@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@400;500&display=swap');
+
+:root {
+  --cream: #faf6f0;
+  --beige: #e8dcc8;
+  --brown: #6b4a2f;
+  --brown-dark: #4a3220;
+  --text: #3b2f2a;
+  --bs-body-bg: var(--cream);
+  --bs-body-color: var(--text);
+  --bs-body-font-family: 'Poppins', sans-serif;
+  --bs-heading-color: var(--brown-dark);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+.btn.btn-brand {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--brown);
+  --bs-btn-border-color: var(--brown);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--brown-dark);
+  --bs-btn-hover-border-color: var(--brown-dark);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--brown-dark);
+  --bs-btn-active-border-color: var(--brown-dark);
+}

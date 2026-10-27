@@ -1,0 +1,98 @@
+<div class="container pb-5" style="max-width: 700px">
+  <h2 class="mb-4">Add Product</h2>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  }
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" formControlName="name" />
+      @if (productForm.controls.name.touched && productForm.controls.name.invalid) {
+        <small class="text-danger">Name must be at least 3 characters</small>
+      }
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Slug (english, lowercase, with dashes)</label>
+      <input type="text" class="form-control" formControlName="slug" placeholder="summer-floral-dress" />
+      @if (productForm.controls.slug.touched && productForm.controls.slug.invalid) {
+        <small class="text-danger">Use english letters, numbers and dashes only, like: my-product</small>
+      }
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="3" formControlName="desc"></textarea>
+      @if (productForm.controls.desc.touched && productForm.controls.desc.invalid) {
+        <small class="text-danger">Description is required</small>
+      }
+    </div>
+    <div class="row">
+      <div class="col-6 mb-3">
+        <label class="form-label">Price (EGP)</label>
+        <input type="number" class="form-control" formControlName="price" />
+        @if (productForm.controls.price.touched && productForm.controls.price.invalid) {
+          <small class="text-danger">Price must be at least 1</small>
+        }
+      </div>
+      <div class="col-6 mb-3">
+        <label class="form-label">Stock</label>
+        <input type="number" class="form-control" formControlName="stock" />
+        @if (productForm.controls.stock.touched && productForm.controls.stock.invalid) {
+          <small class="text-danger">Stock must be 0 or more</small>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Category</label>
+        <select class="form-select" formControlName="category">
+          <option value="">Choose category</option>
+          @if (categories$ | async; as cats) {
+            @for (c of cats.data; track c._id) {
+              <option [value]="c._id">{{ c.name }}</option>
+            }
+          }
+        </select>
+        @if (productForm.controls.category.touched && productForm.controls.category.invalid) {
+          <small class="text-danger">Please choose a category</small>
+        }
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" formControlName="subCategory">
+          <option value="">Choose type</option>
+          @if (subCategories$ | async; as subs) {
+            @for (s of subs.data; track s._id) {
+              <option [value]="s._id">{{ s.name }}</option>
+            }
+          }
+        </select>
+        @if (productForm.controls.subCategory.touched && productForm.controls.subCategory.invalid) {
+          <small class="text-danger">Please choose a type</small>
+        }
+      </div>
+      <div class="col-md-4 mb-3">
+        <label class="form-label">Season</label>
+        <select class="form-select" formControlName="season">
+          <option value="">Choose season</option>
+          @for (s of seasons; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        @if (productForm.controls.season.touched && productForm.controls.season.invalid) {
+          <small class="text-danger">Please choose a season</small>
+        }
+      </div>
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Image</label>
+      <input type="file" class="form-control" accept="image/*" (change)="onFileChange($event)" />
+      @if (fileError) {
+        <small class="text-danger">Please choose an image</small>
+      }
+    </div>
+    <button type="submit" class="btn btn-brand" [disabled]="isLoading">
+      {{ isLoading ? 'Saving...' : 'Save product' }}
+    </button>
+  </form>
+</div>

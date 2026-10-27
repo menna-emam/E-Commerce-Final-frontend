@@ -1,0 +1,13 @@
+.navbar {
+  --bs-navbar-brand-color: var(--brown-dark);
+  --bs-navbar-brand-hover-color: var(--brown);
+  --bs-navbar-color: var(--text);
+  --bs-navbar-hover-color: var(--brown);
+  --bs-navbar-active-color: var(--brown);
+  background-color: var(--beige);
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}

@@ -1,0 +1,57 @@
+<div class="container my-5">
+  @if (product$ | async; as res) {
+    <div class="row g-5 align-items-center">
+      <div class="col-12 col-md-5 col-lg-4">
+        <img
+          [src]="imgBase + res.data.imgURL"
+          [alt]="res.data.name"
+          class="rounded shadow-sm w-100 object-fit-contain bg-white"
+          style="height: 450px"
+        />
+      </div>
+      <div class="col-12 col-md-7 col-lg-8">
+        <small class="text-muted">
+          {{ res.data.category.name }} / {{ res.data.subCategory.name }}
+        </small>
+        <h2 class="mt-1">{{ res.data.name }}</h2>
+        <p class="fs-4 fw-bold">{{ res.data.price }} EGP</p>
+        <p>{{ res.data.desc }}</p>
+
+        @if (!res.data.isInStock) {
+          <span class="badge bg-dark">Out of Stock</span>
+        } @else if (res.data.isLowStock) {
+           <span class="badge bg-danger">Only {{ res.data.stock }} left</span>
+        } @else {
+          <span class="badge bg-success">In Stock</span>
+        }
+        @if (res.data.isInStock) {
+          <div class="d-flex align-items-center gap-3 mt-4">
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-outline-secondary btn-sm"
+                      (click)="decrease()" [disabled]="quantity <= 1">−</button>
+              <span>{{ quantity }}</span>
+              <button class="btn btn-outline-secondary btn-sm"
+            (click)="increase(res.data)" [disabled]="quantity >= res.data.stock">+</button>
+            </div>
+            <button class="btn btn-brand" (click)="addToCart(res.data)">
+              {{ justAdded ? 'Added ✓' : 'Add to Cart' }}
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (related$ | async; as rel) {
+    @if (rel.data.length > 0) {
+      <h3 class="mt-5 mb-4">You may also like</h3>
+      <div class="row g-4">
+        @for (item of rel.data; track item._id) {
+          <div class="col-12 col-md-6 col-lg-3">
+            <app-product-card [product]="item" />
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

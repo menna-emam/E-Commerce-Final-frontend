@@ -1,0 +1,69 @@
+<div class="container my-5">
+  <h2 class="mb-4">My Orders</h2>
+
+  @if (isLoading) {
+    <p class="text-muted">Loading your orders...</p>
+  } @else if (errorMessage) {
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+  } @else if (orders.length === 0) {
+    <div class="text-center py-5">
+      <p class="text-muted">You have no orders yet.</p>
+      <a routerLink="/products" class="btn btn-brand">Start Shopping</a>
+    </div>
+  } @else {
+    @for (order of orders; track order._id) {
+      <div class="card shadow-sm mb-4">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div>
+            <strong>Order #{{ order._id.slice(-6) }}</strong>
+            <small class="text-muted ms-2">{{ order.createdAt | date: 'medium' }}</small>
+          </div>
+          <span class="badge text-capitalize" [class]="statusClass(order.status)">
+            {{ statusLabel(order.status) }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          @for (item of order.items; track item.product) {
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <img
+                [src]="imgBase + item.imgURL"
+                [alt]="item.name"
+                class="rounded object-fit-cover"
+                style="width: 55px; height: 55px"
+              />
+              <div class="flex-grow-1">
+                <h6 class="mb-0">{{ item.name }}</h6>
+                <small class="text-muted">{{ item.quantity }} × {{ item.price }} EGP</small>
+              </div>
+              <strong>{{ item.quantity * item.price }} EGP</strong>
+            </div>
+          }
+
+          <hr />
+
+          <div class="row">
+            <div class="col-12 col-md-6">
+              <small class="text-muted d-block">Delivered to</small>
+              {{ order.shippingAddress.governorate }} - {{ order.shippingAddress.city }}<br />
+              {{ order.shippingAddress.street }}<br />
+              {{ order.shippingAddress.phone }}
+            </div>
+            <div class="col-12 col-md-6 text-md-end mt-3 mt-md-0">
+              <div>Items: {{ order.itemsTotal }} EGP</div>
+              <div>Shipping: {{ order.shippingPrice }} EGP</div>
+              <div class="fw-bold">Total: {{ order.total }} EGP</div>
+              <small class="text-muted">Cash on delivery</small>
+            </div>
+          </div>
+
+          @if (order.status === 'pending') {
+            <button class="btn btn-outline-danger btn-sm mt-3" (click)="cancel(order)">
+              Cancel order
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

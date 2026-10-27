@@ -1,0 +1,136 @@
+
+<section class="hero text-center">
+  <div class="container py-5">
+    <p class="hero-tag mb-2">NEW SEASON</p>
+    <h1 class="display-3 mb-3">Style that speaks for you</h1>
+    <p class="lead mb-4">
+      Discover the latest fashion for women and men, delivered to your door.
+    </p>
+    <a routerLink="/products" class="btn btn-brand btn-lg">Shop Now</a>
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="text-center mb-4">
+    <p class="section-tag mb-1">COLLECTIONS</p>
+    <h2>Shop by category</h2>
+  </div>
+
+  <div class="row g-4">
+    @if (categories$ | async; as cats) {
+      @for (c of cats.data; track c._id) {
+        <div class="col-12 col-md-6">
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: c._id }"
+            class="category-card text-decoration-none"
+            [class]="'cat-' + c.slug"
+          >
+            <span class="watermark">{{ categoryLabel(c) }}</span>
+
+            <div class="category-content">
+              <p class="small-tag">COLLECTION</p>
+              <h3>{{ categoryLabel(c) }}</h3>
+              <span class="shop-link">Shop {{ categoryLabel(c) }} <span class="arrow">→</span></span>
+            </div>
+          </a>
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<section class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">New Arrivals</h2>
+    <a routerLink="/products" class="view-all fw-semibold text-decoration-none">View all →</a>
+  </div>
+
+  @if (products$ | async; as res) {
+    <div class="row g-4">
+      @for (product of res.data; track product._id) {
+        <div class="col-12 col-md-6 col-lg-3">
+          <app-product-card [product]="product" />
+        </div>
+      }
+    </div>
+  }
+</section>
+<section class="features py-5">
+  <div class="container">
+    <div class="row g-4 text-center">
+      <div class="col-12 col-md-4">
+        <div class="icon">🚚</div>
+        <h5 class="mt-2">Delivery to all governorates</h5>
+        <p class="text-muted mb-0">Fast shipping wherever you are in Egypt.</p>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="icon">💵</div>
+        <h5 class="mt-2">Cash on delivery</h5>
+        <p class="text-muted mb-0">Pay when your order arrives.</p>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="icon">✨</div>
+        <h5 class="mt-2">Fresh styles all the time</h5>
+        <p class="text-muted mb-0">New pieces added every week.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container my-5">
+  <h2 class="mb-4">What Our Customers Say</h2>
+
+  @if (testimonials$ | async; as res) {
+    @if (res.data.length === 0) {
+      <p class="text-muted">No reviews yet. Be the first to share your experience!</p>
+    } @else {
+      <div class="row g-4">
+        @for (t of res.data; track t._id) {
+          <div class="col-12 col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <p class="mb-3">“{{ t.message }}”</p>
+                <small class="text-muted">— {{ t.user.name }}</small>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+<div class="container mb-5" style="max-width: 600px">
+  <h5 class="mb-3">Share your experience</h5>
+
+  @if (user$ | async) {
+    @if (successMessage) {
+      <div class="alert alert-success">{{ successMessage }}</div>
+    }
+    @if (errorMessage) {
+      <div class="alert alert-danger">{{ errorMessage }}</div>
+    }
+
+    <form [formGroup]="testimonialForm" (ngSubmit)="onSubmit()">
+      <textarea
+        class="form-control mb-2"
+        rows="3"
+        formControlName="message"
+        placeholder="Tell us what you think (at least 10 characters)"
+      ></textarea>
+
+      @if (testimonialForm.controls.message.touched && testimonialForm.controls.message.invalid) {
+        <small class="text-danger d-block mb-2">
+          Your review must be between 10 and 500 characters
+        </small>
+      }
+
+      <button type="submit" class="btn btn-brand" [disabled]="isLoading">
+        {{ isLoading ? 'Sending...' : 'Send' }}
+      </button>
+    </form>
+  } @else {
+    <p class="text-muted">Please <a routerLink="/login">login</a> to share your review.</p>
+  }
+</div>

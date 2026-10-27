@@ -1,0 +1,75 @@
+<div class="container pb-5">
+  <h2 class="mb-4">Products</h2>
+
+  @if (products$ | async; as res) {
+    <p class="text-muted">Total products: {{ res.data.length }}</p>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Season</th>
+            <th>Status</th>
+            <th>Actions</th>                                                   
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of res.data; track product._id) {
+            <tr>
+              <td>
+                <img
+                  [src]="imgBase + product.imgURL"
+                  [alt]="product.name"
+                  class="rounded object-fit-cover"
+                  style="width: 55px; height: 55px"
+                  loading="lazy"
+                />
+              </td>
+              <td>
+                {{ product.name }}<br />
+                <small class="text-muted">{{ product.slug }}</small>
+              </td>
+              <td>{{ product.category.name }} / {{ product.subCategory.name }}</td>
+              <td>{{ product.price }} EGP</td>
+              <td>
+                @if (product.stock === 0) {
+                  <span class="badge bg-dark">Out of stock</span>
+                } @else if (product.stock <= 3) {
+                  <span class="badge bg-danger">{{ product.stock }}</span>
+                } @else {
+                  {{ product.stock }}
+                }
+              </td>
+              <td>{{ product.season }}</td>
+              <td>
+                @if (product.isActive) {
+                  <span class="badge bg-success">Active</span>
+                } @else {
+                  <span class="badge bg-secondary">Hidden</span>
+                }
+              </td>
+              <td style="min-width: 170px">
+                <a [routerLink]="['/dashboard/products/edit', product._id]" class="btn btn-outline-dark btn-sm me-1">Edit</a>
+                <button class="btn btn-outline-dark btn-sm me-1" (click)="toggleActive(product)">
+                  {{ product.isActive ? 'Hide' : 'Show' }}
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteProduct(product)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">No products yet.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,73 @@
+<div class="container my-5">
+  <h2 class="mb-4">All Products</h2>
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-3">
+      <label class="form-label">Category</label>
+      <select #categorySelect class="form-select" (change)="onCategoryChange(categorySelect.value)">
+        <option value="">All categories</option>
+        @if (categories$ | async; as cats) {
+          @for (c of cats.data; track c._id) {
+    <option [value]="c._id" [selected]="c._id === selectedCategory">{{ c.name }}</option> }
+        }
+      </select>
+    </div>
+    @if (subCategories$ | async; as subs) {
+      <div class="col-12 col-md-3">
+        <label class="form-label">Type</label>
+        <select #subSelect class="form-select" (change)="onSubCategoryChange(subSelect.value)">
+          <option value="">All types</option>
+          @for (s of subs.data; track s._id) {
+            <option [value]="s._id">{{ s.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    <div class="col-12 col-md-3">
+      <label class="form-label">Season</label>
+      <select #seasonSelect class="form-select" (change)="onSeasonChange(seasonSelect.value)">
+        <option value="">All seasons</option>
+        <option value="summer">Summer</option>
+        <option value="winter">Winter</option>
+        <option value="autumn">Autumn</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-3">
+      <label class="form-label">Sort by</label>
+      <select #sortSelect class="form-select" (change)="onSortChange(sortSelect.value)">
+        <option value="-createdAt">Newest</option>
+        <option value="price">Price: low to high</option>
+        <option value="-price">Price: high to low</option>
+      </select>
+    </div>
+  </div>
+  @if (products$ | async; as res) {
+    <div class="row g-4">
+      @for (product of res.data; track product._id) {
+        <div class="col-12 col-md-6 col-lg-3">
+          <app-product-card [product]="product" />
+        </div>
+      } @empty {
+        <div class="col-12">
+          <p class="text-muted">No products match your choice.</p>
+        </div>
+      }
+    </div>
+    @if (res.totalPages > 1) {
+      <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="res.page === 1">
+            <button class="page-link" (click)="onPageChange(res.page - 1)">Previous</button>
+          </li>
+          @for (p of pages(res.totalPages); track p) {
+            <li class="page-item" [class.active]="p === res.page">
+              <button class="page-link" (click)="onPageChange(p)">{{ p }}</button>
+            </li>
+          }
+          <li class="page-item" [class.disabled]="res.page === res.totalPages">
+            <button class="page-link" (click)="onPageChange(res.page + 1)">Next</button>
+          </li>
+        </ul>
+      </nav>
+    }
+  }
+</div>
